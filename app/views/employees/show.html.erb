@@ -1,2 +1,9 @@
-<p>First Name: <%= @employee["first_name"] %></p>
-<p>Last Name: <%= @employee["last_name"] %></p>
+    <p>First name: <%= @employee["first_name"] %></p>
+    <p>Last Name: <%= @employee["last_name"] %></p>
+    <p>SSN: <%= @employee["ssn"] %></p>
+    <p><%= @employee["birthday"] %></p>
+    <p><%= @employee["email"] %></p>
+
+
+
+    <p><%= link_to "Fire this employee!!!!", "/employees/#{@employee['id']}", method: :delete %></p>
