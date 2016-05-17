@@ -1,41 +1,44 @@
 class Employee
 
-  attr_accessor :id, :first_name, :last_name, :email, :birthday, :ssn
+  attr_accessor :id, :first_name, :last_name, :email, :birthday, :ssn, :addresses
 
   def initialize(hash)
-    @id = hash["id"]
-    @first_name = hash["first_name"]
-    @last_name = hash["last_name"]
-    @email = hash["email"]
-    @ssn = hash["ssn"]
-    @birthday = hash["birthday"]
-  end
-
-  def full_name
-    "#{@first_name} #{@last_name}"
+      @id = hash["id"]
+      @first_name = hash["first_name"]
+      @last_name = hash["last_name"]
+      @email = hash["email"]
+      @ssn = hash["ssn"]
+      @birthday = hash["birthday"]
+      @addresses = hash["addresses"]
   end
 
   def self.find(id)
-    employee_hash = Unirest.get("#{ENV['DOMAIN']}/employees/#{id}.json").body
-    return Employee.new(employee_hash)
+    hash = Unirest.get("#{ENV['DOMAIN']}/employees/#{id}").body
+    return Employee.new(hash)
   end
 
   def self.all
-    employee_hashes = Unirest.get("#{ENV['DOMAIN']}/employees.json").body
-    @employees = []
-    employee_hashes.each do |hash|
-      @employees << Employee.new(hash)
+    hashes = Unirest.get("#{ENV['DOMAIN']}/employees").body
+    employees = []
+    hashes.each do |hash|
+      employees << Employee.new(hash)
     end
-    return @employees
+    return employees
   end
 
-  def self.create(parameters_hash)
-    employee_hash = Unirest.post("#{ENV['DOMAIN']}/employees.json", headers: {"Accept" => "application/json"}, parameters: parameters_hash).body
-    return Employee.new(employee_hash)
+  def self.create(attributes)
+    employee_hash = Unirest.post("#{ENV['DOMAIN']}/employees.json", headers: {"Accept" => "application/json"}, parameters: attributes).body
+    Employee.new(employee_hash)
+  end
+
+  def update(attributes)
+    employee_hash = Unirest.patch("#{ENV['DOMAIN']}/employees/#{id}.json", headers: {"Accept" => "application/json"}, parameters: attributes).body
+    Employee.new(employee_hash)
   end
 
   def destroy
-    return Unirest.delete("#{ENV['DOMAIN']}/employees/#{id}").body
+    Unirest.delete("#{ENV['DOMAIN']}/employees/#{id}").body
   end
+
 
 end
