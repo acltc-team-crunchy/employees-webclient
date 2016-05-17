@@ -20,4 +20,22 @@ class Employee
     return Employee.new(employee_hash)
   end
 
+  def self.all
+    employee_hashes = Unirest.get("#{ENV['DOMAIN']}/employees.json").body
+    @employees = []
+    employee_hashes.each do |hash|
+      @employees << Employee.new(hash)
+    end
+    return @employees
+  end
+
+  def self.create(parameters_hash)
+    employee_hash = Unirest.post("#{ENV['DOMAIN']}/employees.json", headers: {"Accept" => "application/json"}, parameters: parameters_hash).body
+    return Employee.new(employee_hash)
+  end
+
+  def destroy
+    return Unirest.delete("#{ENV['DOMAIN']}/employees/#{id}").body
+  end
+
 end
