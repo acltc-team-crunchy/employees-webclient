@@ -18,7 +18,7 @@ class Employee
   end
 
   def self.all
-    hashes = Unirest.get("#{ENV['DOMAIN']}/employees").body
+    hashes = Unirest.get("#{ENV['DOMAIN']}/employees", headers: {"Accept" => "application/json", "X-User-Email" => ENV['USER_EMAIL'], "Authorization" => "Token token=#{ENV['API_KEY']}"}).body
     employees = []
     hashes.each do |hash|
       employees << Employee.new(hash)
@@ -38,6 +38,10 @@ class Employee
 
   def destroy
     Unirest.delete("#{ENV['DOMAIN']}/employees/#{id}").body
+  end
+
+  def full_name
+    "#{first_name} #{last_name}"
   end
 
 
